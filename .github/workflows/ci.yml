@@ -1,0 +1,66 @@
+name: SSE CI/CD
+on: push
+
+jobs:
+  style_check:
+    name: Run style check with black
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: psf/black@stable
+
+  test:
+    name: Run pytest and measure coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.14
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run Pytest with coverage
+        run: uv run python -m pytest --cov
+
+      - name: upload .coverage artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: .coverage
+          path: .coverage
+          retention-days: 1
+
+  coverage_report:
+    name: Report the test coverage
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.14
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Download .coverage artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: .coverage
+
+      - name: Report coverage (Terminal + XML)
+        run: |
+          uv run coverage report
+          uv run coverage xml
+
+      - name: Upload coverage.xml artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage.xml
+          path: coverage.xml
+          retention-days: 14
