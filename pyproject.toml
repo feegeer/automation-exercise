@@ -1,0 +1,13 @@
+[project]
+name = "automation-exercise"
+version = "0.1.0"
+description = "Repository for the SSE automation exercise."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "coverage>=7.13.1",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.1",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+]
