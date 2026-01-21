@@ -30,8 +30,9 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: .coverage
-          path: .coverage
+          path: ./.coverage
           retention-days: 1
+          include-hidden-files: true
 
   coverage_report:
     name: Report the test coverage
